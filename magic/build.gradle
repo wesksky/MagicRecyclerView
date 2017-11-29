@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+
+    compileSdkVersion 23
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
+}
+
+publish {
+    userOrg = '601814590'
+    groupId = 'com.wesksky'
+    artifactId = 'magicrecyclerview'
+    publishVersion = '1.0'
+    desc = ''
+    website = 'https://github.com/wesksky/MagicRecyclerView'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    api 'com.android.support:appcompat-v7:23.2.1'
+    api 'com.android.support:recyclerview-v7:23.2.1'
+    api 'com.android.support.constraint:constraint-layout:1.0.2'
+}
