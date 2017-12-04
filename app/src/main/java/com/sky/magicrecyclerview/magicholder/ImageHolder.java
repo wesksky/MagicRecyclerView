@@ -33,6 +33,10 @@ public class ImageHolder extends BaseHolder {
                 Glide.with(view.getContext())
                     .load(data.getUrl())
                     .into(imageView);
+            } else {
+                Glide.with(view.getContext())
+                    .load("")
+                    .into(imageView);
             }
             imageView.setOnClickListener(
                 v -> Toast.makeText(view.getContext(), data.getUrl(), Toast.LENGTH_LONG).show());

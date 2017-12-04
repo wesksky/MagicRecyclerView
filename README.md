@@ -2,8 +2,13 @@
 
 #### WHY USE IT
 
+* For some complicated recyclerView, such as tumbler, many kind of items by different data. It's hard to manage, so I want to solve all kind of data by one recyclerView.
+
+* If you use a LinearLayout for a static layout, such as settings page. Sometimes the small screen phone cannot display as well, so we have to use recyclerView instead. If this static page is complicated by design, maybe we need to do a lot of work.
+
 #### HOW TO USE
 * In Your Application
+
 ```
 Magic.init(() -> Arrays.asList(
             new Type1Data(),
@@ -11,6 +16,7 @@ Magic.init(() -> Arrays.asList(
         ));
 ```
 * Create Your Own DataType
+
 ```
 public class Type1Data extends BaseData {
     ...
@@ -22,24 +28,8 @@ public class Type1Data extends BaseData {
 }
 ```
 * Create Your Own Holder
+
 ```
-package com.sky.magicrecyclerview.magicholder;
-
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
-import com.bumptech.glide.Glide;
-import com.sky.magicrecyclerview.magicevent.Event1;
-import com.sky.magicrecyclerview.R;
-import com.sky.magicrecyclerview.magicdata.Type1Data;
-import com.wesksky.magicrecyclerview.BaseData;
-import com.wesksky.magicrecyclerview.BaseHolder;
-
-/**
- * Created by sky on 2017/11/27.
- */
-
 public class ImageHolder extends BaseHolder {
     ImageView imageView;
     View view;
@@ -55,7 +45,6 @@ public class ImageHolder extends BaseHolder {
         if (baseData instanceof Type1Data) {
             ...
         }
-
     }
 
     @Override
@@ -64,8 +53,8 @@ public class ImageHolder extends BaseHolder {
     }
 }
 ```
-
 * If You Want Send A Event From Holder
+
 ```
 public class Event1 implements IMagicEvent {
 
@@ -99,5 +88,7 @@ public void post(IMagicEvent event) {
 ...
 ```
 * BTW
-The demo is upload to the github. If you has any suggestions/questions, 
-email: 601814590@qq.com / wesksky@gmail.com
+The demo is upload to the github. If you have any suggestions/questions.
+email:
+601814590@qq.com
+wesksky@gmail.com
