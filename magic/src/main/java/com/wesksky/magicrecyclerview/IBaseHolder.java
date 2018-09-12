@@ -7,5 +7,5 @@ package com.wesksky.magicrecyclerview;
 public interface IBaseHolder {
     int getLayoutId();
 
-    void bindData(BaseData baseData, int position);
+    void bindData(IBaseData baseData, int position);
 }

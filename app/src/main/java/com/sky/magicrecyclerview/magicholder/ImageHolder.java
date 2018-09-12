@@ -5,11 +5,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-import com.sky.magicrecyclerview.magicevent.Event1;
 import com.sky.magicrecyclerview.R;
 import com.sky.magicrecyclerview.magicdata.Type1Data;
-import com.wesksky.magicrecyclerview.BaseData;
+import com.sky.magicrecyclerview.magicevent.Event1;
 import com.wesksky.magicrecyclerview.BaseHolder;
+import com.wesksky.magicrecyclerview.IBaseData;
 
 /**
  * Created by sky on 2017/11/27.
@@ -26,7 +26,12 @@ public class ImageHolder extends BaseHolder {
     }
 
     @Override
-    public void bindData(BaseData baseData, int position) {
+    public int getLayoutId() {
+        return R.layout.item_image;
+    }
+
+    @Override
+    public void bindData(IBaseData baseData, int position) {
         if (baseData instanceof Type1Data) {
             Type1Data data = (Type1Data)baseData;
             if (data != null && !TextUtils.isEmpty(data.getUrl())) {
@@ -49,11 +54,5 @@ public class ImageHolder extends BaseHolder {
                 return true;
             });
         }
-
-    }
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.item_image;
     }
 }

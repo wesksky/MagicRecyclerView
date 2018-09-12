@@ -13,9 +13,11 @@ import android.view.View;
 
 public abstract class BaseHolder extends ViewHolder implements IBaseHolder {
     Handler handler;
+    protected View itemView;
 
     public BaseHolder(View itemView) {
         super(itemView);
+        this.itemView = itemView;
         handler = new Handler(Looper.getMainLooper());
     }
 

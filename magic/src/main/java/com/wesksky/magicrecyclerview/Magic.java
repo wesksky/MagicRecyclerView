@@ -3,11 +3,13 @@ package com.wesksky.magicrecyclerview;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 public class Magic {
 
     private static Magic instance;
 
-    private List<? extends BaseData> baseDataList = new ArrayList<>();
+    private List<Class<? extends IBaseData>> baseDataList = new ArrayList<>();
 
     /**
      * @param magicInit 初始化对象
@@ -16,8 +18,12 @@ public class Magic {
         getInstance().setDataTypeList(magicInit.initDataTypeList());
     }
 
-    private void setDataTypeList(List<? extends BaseData> list) {
+    private void setDataTypeList(List<Class<? extends IBaseData>> list) {
         baseDataList = list;
+        for (Class clazz : baseDataList) {
+            Log.i("MagicRecyclerView",
+                "注册类:" + clazz.getName());
+        }
     }
 
     public int getBaseDataTypeByClass(Class clazz) {
@@ -25,9 +31,12 @@ public class Magic {
         if (baseDataList == null) {
             return type;
         }
-        for (BaseData baseData : baseDataList) {
-            if (baseData.getClass() == clazz) {
-                return baseDataList.indexOf(baseData);
+        if (clazz == null) {
+            return type;
+        }
+        for (Class baseDataClass : baseDataList) {
+            if (baseDataClass == clazz) {
+                return baseDataList.indexOf(baseDataClass);
             }
         }
         return type;
@@ -37,7 +46,7 @@ public class Magic {
         if (baseDataList == null) {
             return null;
         } else {
-            return baseDataList.get(position).getClass();
+            return baseDataList.get(position);
         }
     }
 

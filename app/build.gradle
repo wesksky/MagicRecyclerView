@@ -27,7 +27,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.github.bumptech.glide:glide:4.3.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
-    implementation 'com.wesksky:magicrecyclerview:1.0'
+//    api 'com.wesksky:magicrecyclerview:1.0'
+    api project(":magic")
     api 'com.android.support:appcompat-v7:23.2.1'
     api 'com.android.support:recyclerview-v7:23.2.1'
     api 'com.android.support.constraint:constraint-layout:1.0.2'

@@ -16,8 +16,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Magic.init(() -> Arrays.asList(
-            new Type1Data(),
-            new Type2Data()
+            Type1Data.class,
+            Type2Data.class
         ));
     }
 }

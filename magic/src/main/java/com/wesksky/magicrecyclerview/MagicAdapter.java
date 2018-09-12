@@ -5,41 +5,51 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import com.wesksky.magicrecyclerview.empty.NullHolder;
 
 /**
- * Created by sky on 2017/11/10.
+ * @author sky
+ * @date 2017/11/10
  */
-
-public class MagicAdapter extends MagicRecyclerView.Adapter {
+public class MagicAdapter extends RecyclerView.Adapter {
 
     public static final int UNKNOWN_TYPE = -1;
 
-    List<BaseData> data;
+    public static final String INIT_TAG = "init_tag";
+
+    List<IBaseData> data;
 
     Handler handler;
+
+    OnItemClickListener onItemClickListener;
+    OnItemLongClickListener onItemLongClickListener;
+    OnItemDataBinding onItemDataBinding;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == UNKNOWN_TYPE) {
-            return null;
+            return generateNullHolder(parent);
         }
         Class baseDataClass = Magic.getInstance().getBaseDataByPosition(viewType);
-        BaseData baseData;
+        IBaseData baseData;
         try {
-            baseData = (BaseData)Class.forName(baseDataClass.getName()).newInstance();
+            baseData = (IBaseData)Class.forName(baseDataClass.getName()).newInstance();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            return null;
+            return generateNullHolder(parent);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            return null;
+            return generateNullHolder(parent);
         } catch (InstantiationException e) {
             e.printStackTrace();
-            return null;
+            return generateNullHolder(parent);
         }
 
         Class holderClass = null;
@@ -51,9 +61,11 @@ public class MagicAdapter extends MagicRecyclerView.Adapter {
         if (holderClass != null) {
             try {
                 Constructor constructor = holderClass.getConstructor(View.class);
-                IBaseHolder baseHolderImpl = (IBaseHolder)constructor.newInstance(new View(parent.getContext()));
-                if (baseHolderImpl.getLayoutId() == 0) {
-                    return null;
+                View v = new View(parent.getContext());
+                v.setTag(INIT_TAG);
+                IBaseHolder baseHolderImpl = (IBaseHolder)constructor.newInstance(v);
+                if (baseHolderImpl.getLayoutId() <= 0) {
+                    return generateNullHolder(parent);
                 }
                 BaseHolder baseHolder = (BaseHolder)constructor.newInstance(
                     LayoutInflater.from(parent.getContext()).inflate(baseHolderImpl.getLayoutId(), null));
@@ -69,7 +81,7 @@ public class MagicAdapter extends MagicRecyclerView.Adapter {
                 e.printStackTrace();
             }
         }
-        return null;
+        return generateNullHolder(parent);
     }
 
     public void setHandler(Handler handler) {
@@ -77,15 +89,49 @@ public class MagicAdapter extends MagicRecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        if (onItemDataBinding != null) {
+            onItemDataBinding.onBinding(position);
+        }
         if (holder instanceof BaseHolder) {
+            if (onItemClickListener != null) {
+                ((BaseHolder)holder).itemView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemClickListener.onItemClick(position);
+                    }
+                });
+            } else {
+                ((BaseHolder)holder).itemView.setOnClickListener(null);
+            }
+
+            if (onItemLongClickListener != null) {
+                ((BaseHolder)holder).itemView.setOnLongClickListener(new OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        onItemLongClickListener.onItemLongClick(position);
+                        return true;
+                    }
+                });
+            } else {
+                ((BaseHolder)holder).itemView.setOnLongClickListener(null);
+            }
+
             BaseHolder baseHolder = (BaseHolder)holder;
             baseHolder.bindData(data.get(position), position);
         }
     }
 
+    private ViewHolder generateNullHolder(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(new NullHolder(parent).getLayoutId(), null);
+        return new NullHolder(view);
+    }
+
     @Override
     public int getItemViewType(int position) {
+        if (data.get(position) == null || data.get(position).getClass() == null) {
+            return Magic.getInstance().getBaseDataTypeByClass(null);
+        }
         return Magic.getInstance().getBaseDataTypeByClass(data.get(position).getClass());
     }
 
@@ -101,4 +147,32 @@ public class MagicAdapter extends MagicRecyclerView.Adapter {
         this.data = data;
     }
 
+    public List getData() {
+        return this.data;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(int position);
+    }
+
+    public interface OnItemDataBinding {
+        void onBinding(int position);
+    }
+
+    public void setOnItemDataBinding(OnItemDataBinding onItemDataBinding) {
+        this.onItemDataBinding = onItemDataBinding;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public void setOnItemLongClickListener(
+        OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
 }
